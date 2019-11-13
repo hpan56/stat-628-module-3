@@ -22,6 +22,7 @@ def process_nontext(data_path,result_path):
                 if level in data['attributes']:
                     if data['attributes'][level]!='None':
                         if data['attributes'][level]=='True':
+                            data[level]=1
             for level in multilevel:
                 if level in data['attributes']:
                     if data['attributes'][level]!='None':
