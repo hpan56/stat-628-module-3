@@ -4,28 +4,28 @@ import spacy
 import json
 nlp = spacy.load('en_core_web_sm')
 
-aspects = ['basketball', 'rack', 'hair', 'weekend', 'smell', 'bench', 'climb',
-           'crowded', 'track', 'refund', 'access', 'course', 'student', 'school', 'boxing', 'teacher', 'tour',
-           'office', 'payment', 'food', 'bag', 'ball', 'fan', 'elliptical', 'appointment', 'injury', 'locate',
-           'evening', 'Zumba', 'bill', 'beginner', 'chair', 'online', 'lock', 'section', 'mat', 'vibe',
-           'spacious', 'website', 'tanning', 'key', 'air', 'condition', 'Saturday', 'park', 'drink', 'hurt',
-           'swimming', 'hook', 'childcare', 'instruction', 'baby', 'cleanliness', 'downtown', 'Groupon',
-           'juice', 'People', 'dumbbell', 'lesson', 'lounge', 'Spa', 'discount', 'Monday', 'maintenance',
-           'dry', 'tan', 'worker', 'afternoon', 'counter', 'climbing', 'jacuzzi', 'monitor', 'Sunday',
-           'screen', 'boy', 'movie', 'groupon', 'folk', 'layout', 'pricing', 'diet', 'Friday', '24/7', 'daycare',
-           'mirror', 'zone', 'smoothie', 'Hour', 'pilate', 'store', 'kickboxe', 'meal', 'female', 'window',
-           'spray', 'Coach', 'restroom', 'cafe', 'mess','class', 'work', 'time', 'place', 'staff',
-           'month','room', 'day', 'people', 'equipment', 'membership', 'clean', 'year', 'machine',
-           'location', 'trainer', 'member', '$', 'fitness', 'area', 'sign', 'pay', 'week', 'lot', 'hour',
-           'facility', 'service', 'training', 'instructor', 'kid', 'cardio', 'locker', 'pool', 'wait',
-           'walk', 'price', 'open', 'check', 'charge', 'fee', 'spa', 'minute', 'money', 'manager',
-           'desk', 'club', 'close', 'massage', 'coach', 'contract', 'session', 'shower', 'yoga', 'person',
-           'owner', 'home', 'family', 'Vegas', 'issue', 'towel', 'floor', 'train', 'water', 'LA', 'woman',
-           'space', 'child', 'card', '24', 'problem', 'phone', 'schedule', 'employee', 'treadmill', 'parking',
-           'morning', 'sauna', 'hot', 'music', 'girl', 'crowd', 'night', 'man', 'account', 'court', 'program',
-           'rate', 'management', 'steam', 'town', 'atmosphere', 'daughter', 'lady', 'client', 'door', 'box',
-           'bar', 'cost', 'tv', 'email', 'environment', 'community', 'bathroom', 'stuff', 'bike', 'son',
-           'wall', 'team', 'amenity', 'drive', 'dirty', 'lift']
+aspects = ["class", "time", "place", "staff", "month", "room", "day", "people", "equipment", "membership",
+           "clean", "year", "machine", "location", "trainer", "member", "$", "area", "sign", "pay", "week", "lot",
+           "hour", "facility", "service", "training", "instructor", "kid",
+           "cardio", "locker", "pool", "wait", "walk", "price",
+          "open", "check", "charge", "fee", "spa", "minute", "money", "manager", "desk", "club", "massage",
+          "coach", "contract", "session", "shower", "yoga", "person", "owner", "home", "family", "issue",
+          "towel", "floor", "train", "water", "woman", "space", "child", "card", "24", "problem", "phone", "schedule",
+          "employee", "treadmill", "parking", "morning", "sauna", "hot", "music", "girl", "crowd", "night", "man",
+          "account", "court", "program", "rate", "management", "steam", "town", "atmosphere", "daughter", "lady",
+          "door", "box", "bar", "cost", "tv", "email", "environment", "community", "bathroom", "stuff", "bike", "son",
+          "wall", "team", "amenity", "drive", "dirty", "lift", "basketball", "rack", "hair", "weekend", "smell", "bench",
+          "climb", "crowded", "track", "refund", "access", "course", "student", "school", "boxing", "teacher", "tour",
+          "office", "payment", "food", "bag", "ball", "fan", "elliptical", "appointment", "injury", "locate", "evening",
+          "Zumba", "bill", "beginner", "chair", "online", "lock", "section", "mat", "vibe", "spacious", "website",
+          "tanning", "key", "air", "condition", "Saturday", "park", "drink", "hurt", "swimming", "hook", "childcare",
+          "instruction", "baby", "cleanliness", "downtown", "Groupon", "juice", "People", "dumbbell", "lesson", "lounge",
+          "Spa", "discount", "Monday", "maintenance", "dry", "tan", "worker", "afternoon", "counter", "climbing",
+           "jacuzzi",
+          "monitor", "Sunday", "screen", "boy", "movie", "groupon", "folk", "layout", "pricing", "diet", "Friday",
+           "24/7",
+          "daycare", "mirror", "zone", "smoothie", "Hour", "pilate", "store", "kickboxe", "meal", "female", "window",
+          "spray", "Coach", "restroom", "cafe", "mess", "dollar"]
 negative_words = ["no", "n't", "never", "neither", "nor", "nobody", "none", "nothing", "none", "not",
                   "nowhere", "n’t", "hardly", "barely", "scarcely", "rarely", "seldom", "little", "few"]
 
@@ -137,12 +137,14 @@ def sent_sentiment(s):  # 首先判断每个句子中是否存在aspects，如�
 
 
 f = open('raw_rbu.json')
-for i in range(500):
+f1 = open('raw_rbu_text.json', 'w')
+while True:
     line = f.readline()
     if not line:
         break
     new_dic = dict(json.loads(line))
     test = nlp(new_dic['text'])
+    dic_as = {}
     for s in test.sents:
         value = sent_sentiment(s)
         if value:
@@ -150,8 +152,37 @@ for i in range(500):
                 if str(token) in negative_words:  # 只要整个句子中有negative_word
                     for v in value:
                         value[v] = value[v] * -1
-                        # pass
-            print(value)
-
+        for i in value:
+            if i not in dic_as:
+                dic_as[i] = value[i]
+            elif abs(value[i]) > dic_as[i]:
+                dic_as[i] = value[i]
+            else:
+                pass
+    # print(dic_as)
+    new_dic['text'] = dic_as
+    json.dump(new_dic, f1)
+    f1.write("\n")
 f.close()
+f1.close()
 
+f = open('raw_rbu_text.json')
+f1 = open('raw_text.json', 'w')
+while True:
+    line = f.readline()
+    if not line:
+        break
+    new_dic = dict(json.loads(line))
+    pd = new_dic['text']
+    for i in pd:
+        if abs(pd[i]) <= 0.5:
+            pd[i] = 0
+        elif pd[i] > 0.5:
+            pd[i] = 1
+        else:
+            pd[i] = -1
+    new_dic['text'] = pd
+    json.dump(new_dic, f1)
+    f1.write("\n")
+f.close()
+f1.close()
