@@ -164,8 +164,8 @@ aspect_mapping = inverse_dict(aspects_dict)
 
 
 model_data = jd.json_to_df_exhaust("../raw_data/model_data.json")
-model_data = model_data[["review_id", "text"]]
 model_data_ = model_data[["review_id", "stars"]]
+model_data = model_data[["review_id", "text"]]
 model_data
 
 
