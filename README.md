@@ -1,4 +1,5 @@
 # Stat-628-module-3
+
 Group 6 menbers: 
 Chunyuan Jin, Hao Pan, Chen Qian, Haoxiang Wei
 
@@ -7,6 +8,12 @@ We construct a model with the given Yelp datasets: Review, Business and User, th
 
 
 ## Folders
+There are folders that contain the materials of our project. 
+"A" folder contains ......
+"Code" folder contains the
+"A" folder contains ......
+"A" folder contains ......
+"A" folder contains ......
 
 ## Shiny App
 *link*
