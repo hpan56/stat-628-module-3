@@ -1,6 +1,6 @@
 # Stat-628-module-3
 
-Group 6 menbers: 
+Group 6 members:   
 Chunyuan Jin, Hao Pan, Chen Qian, Haoxiang Wei
 
 ## Description
