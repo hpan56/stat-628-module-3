@@ -8,8 +8,8 @@ We construct a model with the given Yelp datasets: Review, Business and User, th
 
 
 ## Folders
-There are folders that contain the materials of our project. 
-"A" folder contains ......  
+There are folders that contain the materials of our project.   
+ 
 "Code" folder contains the  
 "A" folder contains ......  
 "A" folder contains ......  
