@@ -8,13 +8,13 @@ We construct a model with the given Yelp datasets: Review, Business and User, th
 
 
 ## Folders
-There are folders that contain the materials of our project.   
- 
-"Code" folder contains the code we used to process our data and build our model.  
-"Slide" folder contains the slide we used in two presentations.  
-"Summary" folder contains our final executive summary.  
+Here are folders that contain the materials of our project.   
 
-"A" folder contains ......  
+"Data" folder contains the data containing the raw data in JSON and cleaned data in csv.
+"Code" folder contains the all code for our analysis.    
+"Slide" folder contains the slide we used in two presentations.    
+"Summary" folder contains our final executive summary.   
+"Image" folder contains the images we used to present our conclusion.
 
 ## Shiny App
 *link*
