@@ -8,7 +8,7 @@ import pandas as pd
 
 
 ## load data
-data1.to_json("../Data/cleaned_data.json",orient="records", lines=True)
+data1 = jd.json_to_df_exhaust("../Data/cleaned_data.json")
 
 ## fill missing value with 0 and generate data to fit model
 data1.fillna(0, inplace=True)
@@ -16,8 +16,8 @@ stars1 = data1.stars.values
 data1_ = data1.drop(columns = ["review_id","stars"])
 features1 = data1_.drop(columns=["Monday_open", "Monday_close","Tuesday_open", "Tuesday_close","Wednesday_open", 
                                 "Wednesday_close", "Thursday_open", "Thursday_close","Friday_open", "Friday_close",
-                                "Saturday_open", "Sunday_open", "Saturday_close", "Sunday_close", "weekday_close",
-                                 "weekday_open", "weekend_close", "weekend_open"]).values
+                                "Saturday_open", "Sunday_open", "Saturday_close", "Sunday_close", "WheelchairAccessible",
+                                 "weekday_close", "is_open", "weekday_open", "weekend_close", "weekend_open"]).values
 
 ## Initialize a random forest model
 rf = RandomForestClassifier(n_estimators=100,criterion="gini", max_depth=100,min_samples_split=5,min_samples_leaf=2,
@@ -31,8 +31,8 @@ rf1 = rf.fit(features1, stars1)
 ## Generate a dataframe with features and correspondingly feature importance for plotting
 features_ls = data1_.drop(columns=["Monday_open", "Monday_close","Tuesday_open", "Tuesday_close","Wednesday_open", 
                                 "Wednesday_close", "Thursday_open", "Thursday_close","Friday_open", "Friday_close",
-                                "Saturday_open", "Sunday_open", "Saturday_close", "Sunday_close","weekday_close",
-                                 "weekday_open", "weekend_close", "weekend_open"]).columns
+                                "Saturday_open", "Sunday_open", "Saturday_close", "Sunday_close","WheelchairAccessible",
+                                 "weekday_close", "is_open", "weekday_open", "weekend_close", "weekend_open"]).columns
 features_val = rf1.feature_importances_
 features_df = pd.DataFrame({"features":list(features_ls), "importance":list(features_val)})
 
@@ -95,10 +95,10 @@ def hist_time(feature, rating=None, span=None, coef=False):
     #################################################################################################################################
 
     if rating:
-        plt.hist(advice[advice["stars"]==rating][feature], rwidth = 0.6,
+        plt.hist(data1[data1["stars"]==rating][feature], rwidth = 0.6,
                  bins=24, histtype="bar",edgecolor="black", alpha=0.7)
     else:
-        (counts, bins, patch) = plt.hist(advice[(advice[feature]<=span[1]) & (advice[feature]>=span[0])].stars, 
+        (counts, bins, patch) = plt.hist(data1[(data1[feature]<=span[1]) & (data1[feature]>=span[0])].stars, 
                                          rwidth = 0.6, bins=5, histtype="bar",edgecolor="black", alpha=0.7)
     plt.show()
     if coef:
