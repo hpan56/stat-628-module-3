@@ -36,7 +36,7 @@ sen = f.read()
 f.close()
 sen = sen.split('\n')
 sen = sen[:-1]
-sen_dic = {}  # 创建情感词典
+sen_dic = {}
 for i in sen:
     r = i.split(' ')
     if r[5][14:] == 'positive':
@@ -64,7 +64,7 @@ def generate_record(sent):  # to make the dependence relationship into a diction
     return record
 
 
-# 构造函数向下遍历树的函数，输入一个词的list，找出下层词的list，BFS遍历
+# input a list of words, output words which are connected to the input
 def find_next(word_list, record):
     result = []
     for i in word_list:
@@ -73,57 +73,58 @@ def find_next(word_list, record):
     return list(set(result))
 
 
-def find_up(one_word, record):  # 输入一个word, 输出它的根节点
+def find_up(one_word, record):  # input a word, output its root
     for i in record:
         if one_word in record[i]:
             return i
     return None
 
 
-def sent_sentiment(s):  # 首先判断每个句子中是否存在aspects，如果存在存下aspects，再分层找情感词，先下两层，再同层，再上两层。
+def sent_sentiment(s):  # input a sentence, output a dictionary of all aspects it mentioned with sentiment scores.
     dependency = generate_record(s)
     sentiment = {}
     for token in s:
-        if str(token.text) in aspects:  # 判断aspect存在
+        if str(token.text) in aspects:
             word = [str(token.text)]
             n = 0
-            while not str(token.text) in sentiment and n < 3:  # 在尚未找到aspect对应的grade时,往下三层
-                find = find_next(word, dependency)  # 往下找
+            while not str(token.text) in sentiment and n < 3:
+                find = find_next(word, dependency)
                 for i in find:
                     if i in sen_dic:
-                        if sen_dic[i][1] == 'adj':  # 如果是形容词，直接判断
-                            sentiment[str(token.text)] = sen_dic[i][0]
+                        if sen_dic[i][1] == 'adj':
+                            sentiment[str(token.text)] = [sen_dic[i][0], i]
                             break
-                        if sen_dic[i][1] == 'verb':  # 如果是动词，向下找一个副词
-                            sentiment[str(token.text)] = sen_dic[i][0]
+                        if sen_dic[i][1] == 'verb':
+                            sentiment[str(token.text)] = [sen_dic[i][0], i]
                             try:
-                                adv = dependency[i]  # 该动词是一个根节点，有词在形容它
+                                adv = dependency[i]
                                 for w in adv:
                                     if w in sen_dic and sen_dic[w][1] == 'anypos':
-                                        sentiment[str(token.text)] = sentiment[str(token.text)]*sen_dic[w][0]
+                                        sentiment[str(token.text)][0] = sentiment[str(token.text)][0]*sen_dic[w][0]
+                                        sentiment[str(token.text)][1] = sentiment[str(token.text)][1] + '&' + w
                                         break
                             except:
                                 pass
                             break
-                word = find  # 继续往下找
+                word = find
                 n = n + 1
-            # 同层找和往上回溯
             find = str(token.text)
-            while not sentiment and n < 7:  # 同层及往上找3层
+            while not sentiment and n < 7:
                 find_root = find_up(find, dependency)
                 if find_root:
                     for i in dependency[find_root]:
                         if i in sen_dic:
-                            if sen_dic[i][1] == 'adj':  # 如果是形容词，直接判断
-                                sentiment[str(token.text)] = sen_dic[i][0]
+                            if sen_dic[i][1] == 'adj':
+                                sentiment[str(token.text)] = [sen_dic[i][0], i]
                                 break
-                            if sen_dic[i][1] == 'verb':  # 如果是动词，向下找一个副词
-                                sentiment[str(token.text)] = sen_dic[i][0]
+                            if sen_dic[i][1] == 'verb':
+                                sentiment[str(token.text)] = [sen_dic[i][0], i]
                                 try:
-                                    adv = dependency[i]  # 该动词是一个根节点，有词在形容它
+                                    adv = dependency[i]
                                     for w in adv:
                                         if w in sen_dic and sen_dic[w][1] == 'anypos':
-                                            sentiment[str(token.text)] = sentiment[str(token.text)]*sen_dic[w][0]
+                                            sentiment[str(token.text)][0] = sentiment[str(token.text)][0]*sen_dic[w][0]
+                                            sentiment[str(token.text)][1] = sentiment[str(token.text)][1] + '&' + w
                                             break
                                 except:
                                     pass
@@ -133,11 +134,8 @@ def sent_sentiment(s):  # 首先判断每个句子中是否存在aspects，如�
     return sentiment
 
 
-# aspects = ['ER', 'room', 'place', 'care', 'facility']
-
-
 f = open('raw_rbu.json')
-f1 = open('raw_rbu_text.json', 'w')
+f1 = open('raw_rbu_text_record.json', 'w')
 while True:
     line = f.readline()
     if not line:
@@ -145,44 +143,27 @@ while True:
     new_dic = dict(json.loads(line))
     test = nlp(new_dic['text'])
     dic_as = {}
+    dic_as1 = {}
     for s in test.sents:
         value = sent_sentiment(s)
         if value:
             for token in s:
-                if str(token) in negative_words:  # 只要整个句子中有negative_word
+                if str(token) in negative_words:
                     for v in value:
-                        value[v] = value[v] * -1
+                        value[v][0] = value[v][0] * -1
+                        value[v][1] = value[v][1]
         for i in value:
             if i not in dic_as:
-                dic_as[i] = value[i]
-            elif abs(value[i]) > dic_as[i]:
-                dic_as[i] = value[i]
+                dic_as[i] = value[i][0]
+                dic_as1[i] = value[i][1]
+            elif abs(value[i][0]) > dic_as[i]:
+                dic_as[i] = value[i][0]
+                dic_as1[i] = value[i][1]
             else:
                 pass
-    # print(dic_as)
-    new_dic['text'] = dic_as
+    new_dic['text'] = dic_as1
     json.dump(new_dic, f1)
     f1.write("\n")
 f.close()
 f1.close()
 
-f = open('raw_rbu_text.json')
-f1 = open('raw_text.json', 'w')
-while True:
-    line = f.readline()
-    if not line:
-        break
-    new_dic = dict(json.loads(line))
-    pd = new_dic['text']
-    for i in pd:
-        if abs(pd[i]) <= 0.5:
-            pd[i] = 0
-        elif pd[i] > 0.5:
-            pd[i] = 1
-        else:
-            pd[i] = -1
-    new_dic['text'] = pd
-    json.dump(new_dic, f1)
-    f1.write("\n")
-f.close()
-f1.close()
