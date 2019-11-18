@@ -8,7 +8,7 @@ import pandas as pd
 
 
 ## load data
-data1.to_json("../raw_data/data1.json",orient="records", lines=True)
+data1.to_json("../Data/cleaned_data.json",orient="records", lines=True)
 
 ## fill missing value with 0 and generate data to fit model
 data1.fillna(0, inplace=True)
@@ -41,33 +41,24 @@ features_df.sort_values(by=['importance'], ascending = False, inplace = True)
 
 ## Draw pictures
 fig, ax = plt.subplots(figsize=(8,6), dpi= 80)
-
 ax.hlines(y=range(20,0,-1), xmin=0, xmax=0.14, color='gray', alpha=0.7, linewidth=1, linestyles='dashdot')
-
 ax.scatter(y=range(20,0,-1), x=features_df.importance[0:20], s=75, color='firebrick', alpha=0.7)
 
-
-
 # Title, Label, Ticks and Ylim
-
 ax.set_title('The most important 20 features', fontdict={'size':18})
-
 ax.set_xlabel('Feature importance')
-
 ax.set_yticks(range(20,0,-1))
-
 ax.set_yticklabels(features_df.features[0:20], fontdict={'horizontalalignment': 'right'})
-
 ax.set_xlim(0, 0.14)
 
 ## Save the picture
-#plt.savefig("../Image/feature_importance.png", dpi = 80)
+plt.savefig("../Image/feature_importance.png", dpi = 80)
 
-plt.show()
+#plt.show()
 
 
 # Reload data in case of some data changes
-data1 = jd.json_to_df_exhaust("../data/cleaned_data.json")
+data1 = jd.json_to_df_exhaust("../Data/cleaned_data.json")
 
 
 def plot_feature(feature, coef=False):
@@ -88,7 +79,6 @@ def plot_feature(feature, coef=False):
     if coef:
         print(np.corrcoef([1,2,3,4,5], counts[0]/counts[1]))
     return (counts, bins, patch)
-
 
 
 def hist_time(feature, rating=None, span=None, coef=False):
@@ -113,7 +103,3 @@ def hist_time(feature, rating=None, span=None, coef=False):
     plt.show()
     if coef:
         print(np.corrcoef([1,2,3,4,5], counts))
-
-
-
-
