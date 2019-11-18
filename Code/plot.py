@@ -40,7 +40,7 @@ features_df = pd.DataFrame({"features":list(features_ls), "importance":list(feat
 features_df.sort_values(by=['importance'], ascending = False, inplace = True)
 
 ## Draw pictures
-fig, ax = plt.subplots(figsize=(8,6), dpi= 80)
+fig, ax = plt.subplots(figsize=(18,6), dpi= 100)
 ax.hlines(y=range(20,0,-1), xmin=0, xmax=0.14, color='gray', alpha=0.7, linewidth=1, linestyles='dashdot')
 ax.scatter(y=range(20,0,-1), x=features_df.importance[0:20], s=75, color='firebrick', alpha=0.7)
 
@@ -52,7 +52,7 @@ ax.set_yticklabels(features_df.features[0:20], fontdict={'horizontalalignment': 
 ax.set_xlim(0, 0.14)
 
 ## Save the picture
-plt.savefig("../Image/feature_importance.png", dpi = 80)
+plt.savefig("../Image/feature_importance.png", dpi = 100)
 
 #plt.show()
 
