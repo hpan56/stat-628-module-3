@@ -4,7 +4,7 @@ Group 6 members:
 
 Chunyuan Jin, Hao Pan, Chen Qian, Haoxiang Wei
 
-## Brief description
+## Brief Description
 This is a data analysis project focusing on gyms reviews to help gym owners improve gyms' ratings. 
 
 Datasets: Three json files called Review, Business and User.
