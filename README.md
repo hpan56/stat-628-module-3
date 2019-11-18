@@ -26,6 +26,6 @@ There are 4 folders in total that contain all the things about our project.
 "Image" folder contains the images we used to present our conclusion.
 
 ## Shiny App
-A shiny app is built to present project outcomes. Type the name of a certain gym (choose one from the lists if there're multiple gyms share the same name), the advice will be automatically generated.
+A shiny app is built to present project outcomes. Type the name of a certain gym and city (choose one from the lists if there're multiple gyms share the same name), the advice will be automatically generated.
 
 link: https://chrisqian.shinyapps.io/gym_review_recommand/
